@@ -1,0 +1,85 @@
+ *********AREA OF A CIRCLE IN A TBALE USING LOOP***********
+create table area(radius number(5) , area1 number(5,2));
+describe area;
+select * from area;
+declare 
+ a number(5,2);
+ pi number(5,2):= 3.14;
+ r number(3):=1;
+begin 
+ while r<=7
+ loop
+  a:=pi*r*r;
+  insert into area values(r,a);
+  r:=r+1;
+  end loop;
+end
+*********AREA OF A CIRCLE IN A TBALE USING LOOP AND PRINTING A LINE AS OUTPUT USING IF ELSE STATEMENTS***********
+declare 
+ a number(5,2);
+ pi number(5,2):= 3.14;
+ r number(3):=12;
+begin
+ if r<10 then
+ a:=pi*r*r;
+ insert into area area values(r,a);
+ else
+ dbms_output.put_line('Radius value is larger than 10');
+end if;
+end
+*********RETREIVING DTA FROM THE TABLE OF PARTICULAR RADIUS VALUE***********
+
+
+declare 
+ a number(5,2);
+ pi number(5,2):= 3.14;
+ r number(3):=12;
+begin
+ select area1 into a from area where radius=3;
+ dbms_output.put_line('Area for radius 3 is: '|| a);
+end
+************************TRIGGER******************
+create table student( regno number(10) , name char(20), address char(20), marks number(5,2));
+create table logtable1(id number(10), opr char(10));
+describe logtable1;
+insert into student values(4,'ssd', 'chandigarh',80.6)
+update student set marks = 90.9 where regno=1;
+delete from student where regno=1;
+select * from logtable1;
+select * from student;
+drop trigger t1;
+create or replace trigger t2 
+after insert or delete or update on student for each row
+declare 
+  id number(9);
+  opr char(10);
+begin
+  if inserting then
+     id:=:new.regno;
+     opr:='insert';
+     insert into logtable1 values (id,opr);
+  end if;
+  if deleting then
+     id:=:old.regno;
+     opr:='delete';
+     insert into logtable1 values (id,opr);
+  end if;
+  if updating then
+     id:=:old.regno;
+     opr:='update';
+     insert into logtable1 values (id,opr);
+  end if;
+end
+********************************
+create sequence seq increment by 1 start with 1;
+
+create or replace trigger t3 before insert on student for each row
+declare
+ regNo char(10);
+begin
+select seq.nextval into regNo from dual;
+ :new.regNo:=regNo;
+end
+
+
+ 
